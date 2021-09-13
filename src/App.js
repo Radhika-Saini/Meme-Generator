@@ -1,23 +1,32 @@
-import logo from './logo.svg';
+import React,{useState,useEffect} from 'react';
 import './App.css';
+import Templates from './Templates';
+import Meme from './Meme';
 
-function App() {
-  return (
+
+
+function App(){
+  const [templates,setTemplates]=useState([]);
+  const [meme,setMeme]=useState(null);
+
+  const fetchTemplate=async()=>{
+    const response=await fetch("https://api.imgflip.com/get_memes");
+    const memes=await response.json();
+    setTemplates(memes.data.memes);
+  }
+
+  useEffect(()=>{
+    fetchTemplate();
+  },[]);
+  
+  
+  return(
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Meme Generator</h1>
+      <h3>Choose any Template and make your meme</h3>
+      {meme===null? <Templates templates={templates} 
+      setMeme={setMeme} />
+      : <Meme meme={meme} setMeme={setMeme}/>}
     </div>
   );
 }
